@@ -58,36 +58,20 @@ public class PlaidServiceImpl implements PlaidService {
 
             // Fetch transactions
             TransactionsGetResponse response = plaidApi.transactionsGet(request).execute().body();
+            if (response == null) {
+                log.error("Error getting transaction from Plaid for userId {}", userId);
+                throw new IllegalArgumentException("Plaid Client Call Error");
+            }
+            if (response.getTransactions() == null) {
+                return;
+            }
 
             response.getTransactions()
                     .forEach(
                             plaidTx -> {
-                                // Optionally: check if transaction already exists using
+                                // TODO: check if transaction already exists using
                                 // plaidTransactionId
-                                Transaction tx =
-                                        Transaction.builder()
-                                                .user(user)
-                                                .transactionId(plaidTx.getTransactionId())
-                                                .accountId(plaidTx.getAccountId())
-                                                .date(plaidTx.getDate())
-                                                .amount(plaidTx.getAmount())
-                                                .name(plaidTx.getName())
-                                                .merchantName(plaidTx.getMerchantName())
-                                                .category("Others") // Or your rule engine result
-                                                .pending(plaidTx.getPending())
-                                                .plaidCategory(plaidTx.getCategory())
-                                                // Optionals:
-                                                .originalDescription(
-                                                        plaidTx.getOriginalDescription())
-                                                .paymentChannel(plaidTx.getPaymentChannel())
-                                                .logoUrl(plaidTx.getLogoUrl())
-                                                .website(plaidTx.getWebsite())
-                                                .isManuallyCategorized(false)
-                                                .alertSent(false)
-                                                .rawData(plaidTx.toString()) // For debugging/audit,
-                                                // can remove for prod
-                                                .build();
-
+                                Transaction tx = buildTransaction(user, plaidTx);
                                 transactionRepository.save(tx);
                             });
 
@@ -97,5 +81,28 @@ public class PlaidServiceImpl implements PlaidService {
                     userId,
                     ex.getMessage());
         }
+    }
+
+    private Transaction buildTransaction(User user, com.plaid.client.model.Transaction plaidTx) {
+        return Transaction.builder()
+                .user(user)
+                .transactionId(plaidTx.getTransactionId())
+                .accountId(plaidTx.getAccountId())
+                .date(plaidTx.getDate())
+                .amount(plaidTx.getAmount())
+                .name(plaidTx.getName())
+                .merchantName(plaidTx.getMerchantName())
+                .category("Others") // Or your rule engine result
+                .pending(plaidTx.getPending())
+                .plaidCategory(plaidTx.getCategory())
+                .originalDescription(plaidTx.getOriginalDescription())
+                .paymentChannel(plaidTx.getPaymentChannel())
+                .logoUrl(plaidTx.getLogoUrl())
+                .website(plaidTx.getWebsite())
+                .isManuallyCategorized(false)
+                .alertSent(false)
+                .rawData(plaidTx.toString()) // For debugging/audit,
+                // can remove for prod
+                .build();
     }
 }
