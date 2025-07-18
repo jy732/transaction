@@ -5,7 +5,11 @@ import lombok.*;
 
 @Entity
 @Table(name = "app_users")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,8 +21,7 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
-    @Column
-    private String plaidAccessToken; // Store encrypted in prod
+    @Column private String plaidAccessToken; // Store encrypted in prod
 
     // Additional fields/settings as needed
 }

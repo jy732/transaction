@@ -5,7 +5,11 @@ import lombok.*;
 
 @Entity
 @Table(name = "category_rules")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CategoryRule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
