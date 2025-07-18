@@ -19,7 +19,7 @@ public class Transaction {
 
     private LocalDate date;
 
-    private BigDecimal amount;
+    private Double amount;
 
     private String merchant;
 
