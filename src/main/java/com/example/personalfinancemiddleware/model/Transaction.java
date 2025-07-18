@@ -1,11 +1,12 @@
 package com.example.personalfinancemiddleware.model;
 
+import com.plaid.client.model.Transaction.PaymentChannelEnum;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.*;
 
 @Entity
-@Table(name = "user_transactions")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,20 +21,35 @@ public class Transaction {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private LocalDate date;
+    @Column(nullable = false)
+    private String transactionId; // Plaid's unique transaction ID
 
+    @Column(nullable = false)
+    private String accountId;
+
+    private LocalDate date;
     private Double amount;
 
-    private String merchant;
+    private String name;
+    private String merchantName;
 
-    private String description;
+    private String category; // Your assigned category
 
-    private String category;
+    private Boolean pending;
 
-    private boolean isManuallyCategorized;
+    private List<String> plaidCategory; // Raw Plaid category (string, comma-separated)
 
-    private boolean alertSent;
+    // Optional, but handy:
+    private String originalDescription;
+    private PaymentChannelEnum paymentChannel;
+    private String logoUrl;
+    private String website;
 
-    @Column(columnDefinition = "TEXT")
-    private String rawData; // JSON string of the Plaid/raw transaction if needed
+    // System fields
+    private Boolean isManuallyCategorized;
+    private Boolean alertSent;
+
+    // Optionally store rawData for debugging/audit (can drop for prod if not needed)
+    @Column(columnDefinition = "text")
+    private String rawData;
 }

@@ -67,15 +67,27 @@ public class PlaidServiceImpl implements PlaidService {
                                 Transaction tx =
                                         Transaction.builder()
                                                 .user(user)
+                                                .transactionId(plaidTx.getTransactionId())
+                                                .accountId(plaidTx.getAccountId())
                                                 .date(plaidTx.getDate())
                                                 .amount(plaidTx.getAmount())
-                                                .merchant(plaidTx.getMerchantName())
-                                                .description(plaidTx.getName())
-                                                .category("Others") // Default, categorize later
+                                                .name(plaidTx.getName())
+                                                .merchantName(plaidTx.getMerchantName())
+                                                .category("Others") // Or your rule engine result
+                                                .pending(plaidTx.getPending())
+                                                .plaidCategory(plaidTx.getCategory())
+                                                // Optionals:
+                                                .originalDescription(
+                                                        plaidTx.getOriginalDescription())
+                                                .paymentChannel(plaidTx.getPaymentChannel())
+                                                .logoUrl(plaidTx.getLogoUrl())
+                                                .website(plaidTx.getWebsite())
                                                 .isManuallyCategorized(false)
                                                 .alertSent(false)
-                                                .rawData(plaidTx.toString())
+                                                .rawData(plaidTx.toString()) // For debugging/audit,
+                                                // can remove for prod
                                                 .build();
+
                                 transactionRepository.save(tx);
                             });
 
