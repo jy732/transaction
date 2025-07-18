@@ -45,6 +45,7 @@ public class PlaidServiceImpl implements PlaidService {
     @Override
     public void pollTransactionsForUser(User user) {
         Long userId = user.getId();
+        log.info("Polling transaction for user {}", user);
         try {
             LocalDate startDate = LocalDate.now().minusDays(30); // Customize range
             LocalDate endDate = LocalDate.now();

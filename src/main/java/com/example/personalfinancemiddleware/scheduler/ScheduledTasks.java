@@ -15,7 +15,7 @@ public class ScheduledTasks {
         this.plaidService = plaidService;
     }
 
-    @Scheduled(cron = "0 * * * * *") // Every minute for demo; adjust as needed
+    @Scheduled(cron = "*/10 * * * * *") // Every minute for demo; adjust as needed
     public void pollPlaid() {
         log.info("Start polling records from Plaid!");
         plaidService.pollTransactionsForAllUsers();
